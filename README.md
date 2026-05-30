@@ -2,4 +2,4 @@
 JF skit
 
 
-Just shit for easy handeling.
+Just shit for easy handeling inside my personal Jellyfin.
