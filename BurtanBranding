@@ -1,0 +1,73 @@
+@import url("https://cdn.jsdelivr.net/gh/n00bcodr/jellyfish@main/theme.css");
+@import url("https://cdn.jsdelivr.net/gh/n00bcodr/jellyfish@main/indicators.css");
+@import url("https://cdn.jsdelivr.net/gh/n00bcodr/jellyfish@main/progress_bar.css");
+@import url("https://cdn.jsdelivr.net/gh/n00bcodr/jellyfish@main/10.11_fixes.css");
+@import url("https://cdn.jsdelivr.net/gh/n00bcodr/Jellyfish/colors/lavender.css");
+
+/* ── Homepage: erase old logo & text ── */
+.pageTitleWithDefaultLogo,
+.pageTitle {
+    font-size: 0 !important;
+    background-image: none !important;
+}
+
+.pageTitleWithDefaultLogo::after {
+    display: none !important;
+}
+
+.pageTitle::before {
+    content: "";<
+    display: inline-block;
+    width: 140px;
+    height: 36px;
+    background-image: url('https://cheshireacademy.org/wp-content/uploads/2025/03/CatflixLogo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left center;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+
+/* 1. Global Reset: Remove background from dashboard */
+.backgroundContainer {
+    background-image: none !important;
+}
+
+/* 2. Login Page: Apply the Cat collage AND the dimming */
+#loginPage {
+    /* We use a 'linear-gradient' to 'dim' the image before it's even rendered */
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                url('https://preview.redd.it/here-is-the-finished-cat-meme-collage-i-hope-you-enjoy-v0-0u685bxa1xb61.png?auto=webp&s=a764d5e254388f54940158ff67b7bc2eeb6f4cbd') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+}
+
+/* 3. Ensure the form itself doesn't inherit the background/dimming */
+#loginPage form {
+    background: transparent !important;
+}
+
+
+/* ── ta inte bort ── */
+/* ── Override Jellyfish Login Logo via CSS Variable ── */
+#loginPage h1::before {
+    background-image: url('https://cheshireacademy.org/wp-content/uploads/2025/03/CatflixLogo.png') !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    background-size: contain !important;
+    /* Maintain the size constraints seen in your inspector */
+    width: 100% !important;
+    height: 80px !important;
+}
+
+/* Optional: If you want to force the variable override */
+:root {
+    --logo: url('https://cheshireacademy.org/wp-content/uploads/2025/03/CatflixLogo.png') !important;
+}
+
+/*######################################################################*/
+
+
