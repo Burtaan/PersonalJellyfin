@@ -51,7 +51,6 @@
 }
 
 
-/* ── ta inte bort ── */
 /* ── Override Jellyfish Login Logo via CSS Variable ── */
 #loginPage h1::before {
     background-image: url('https://cheshireacademy.org/wp-content/uploads/2025/03/CatflixLogo.png') !important;
@@ -67,7 +66,4 @@
 :root {
     --logo: url('https://cheshireacademy.org/wp-content/uploads/2025/03/CatflixLogo.png') !important;
 }
-
-/*######################################################################*/
-
 
