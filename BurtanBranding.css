@@ -31,13 +31,7 @@
 
 /* 1. Global Reset: Remove background from dashboard */
 .backgroundContainer {
-    background:
-        radial-gradient(ellipse 80% 50% at 0% 0%, #2d1040 0%, transparent 60%),
-        radial-gradient(ellipse 60% 60% at 100% 100%, #1a0d35 0%, transparent 55%),
-        radial-gradient(ellipse 70% 40% at 50% 80%, #200a30 0%, transparent 100%),
-        rgb(16, 8, 32) !important;
-    height: 100vh !important;
-    min-height: 100vh !important;
+    background-image: none !important;
 }
 
 /* 2. Login Page: Apply the Cat collage AND the dimming */
@@ -72,4 +66,3 @@
 :root {
     --logo: url('https://cheshireacademy.org/wp-content/uploads/2025/03/CatflixLogo.png') !important;
 }
-
