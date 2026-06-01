@@ -1,6 +1,54 @@
 (function () {
   const STORAGE_KEY = 'catflix_settings';
 
+  // ── Add new features HERE and nowhere else ────────────────────────────────
+  const FEATURES = [
+    {
+      key:   'movieInfoEnabled',
+      label: 'Movie Info Button',
+      desc:  'Cast, runtime & IMDb link in player',
+      init:  '__catflix_movieinfo_init',
+      stop:  '__catflix_movieinfo_stop',
+      cleanup() {
+        window.__catflix_movieinfo_running = false;
+        const el = document.getElementById('catflix-info-btn');
+        if (el) el.remove();
+      }
+    },
+    {
+      key:   'locationTagsEnabled',
+      label: 'Location Tags',
+      desc:  'PC / NAS badges on posters',
+      init:  '__catflix_locationtags_init',
+      stop:  '__catflix_locationtags_stop',
+      cleanup() {
+        window.__catflix_locationtags_running = false;
+        document.querySelectorAll('.catflix-location-badge').forEach(b => b.remove());
+        document.querySelectorAll('.card[data-id]').forEach(c => { c._locationTagged = false; });
+      }
+    },
+    {
+      key:   'pcStatusEnabled',
+      label: 'PC Status Indicator',
+      desc:  'Online dot in header',
+      init:  '__catflix_pcstatus_init',
+      stop:  '__catflix_pcstatus_stop',
+      cleanup() {
+        window.__catflix_pcstatus_running = false;
+        const el = document.getElementById('pc-status-btn');
+        if (el) el.remove();
+      }
+    },
+    {
+      key:   'catFactEnabled',
+      label: 'Cat Fact Popup',
+      desc:  'Random cat fact when you open Jellyfin',
+      init:  '__catflix_catfact_init',
+      stop:  '__catflix_catfact_stop'
+    }
+  ];
+  // ─────────────────────────────────────────────────────────────────────────
+
   function getSettings() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
     catch { return {}; }
@@ -20,52 +68,23 @@
     <path d="M50 42 C28 42 18 55 20 70 C22 85 35 92 50 92 C65 92 78 85 80 70 C82 55 72 42 50 42 Z"/>
   </svg>`;
 
-  // ── Live feature control ──────────────────────────────────────────────────
+  // ── Live feature control (driven by FEATURES array) ───────────────────────
 
   function applyFeature(key, on) {
-    if (key === 'movieInfoEnabled') {
-      if (on) {
-        window.__catflix_movieinfo_running = false;
-        if (window.__catflix_movieinfo_init) window.__catflix_movieinfo_init();
-      } else {
-        if (window.__catflix_movieinfo_stop) {
-          window.__catflix_movieinfo_stop();
-        } else {
-          window.__catflix_movieinfo_running = false;
-          const el = document.getElementById('catflix-info-btn');
-          if (el) el.remove();
-        }
-      }
-    }
+    const feature = FEATURES.find(f => f.key === key);
+    if (!feature) return;
 
-    if (key === 'locationTagsEnabled') {
-      if (on) {
-        window.__catflix_locationtags_running = false;
-        document.querySelectorAll('.card[data-id]').forEach(c => { c._locationTagged = false; });
-        if (window.__catflix_locationtags_init) window.__catflix_locationtags_init();
-      } else {
-        if (window.__catflix_locationtags_stop) {
-          window.__catflix_locationtags_stop();
-        } else {
-          window.__catflix_locationtags_running = false;
-          document.querySelectorAll('.catflix-location-badge').forEach(b => b.remove());
-          document.querySelectorAll('.card[data-id]').forEach(c => { c._locationTagged = false; });
-        }
-      }
-    }
-
-    if (key === 'pcStatusEnabled') {
-      if (on) {
-        window.__catflix_pcstatus_running = false;
-        if (window.__catflix_pcstatus_init) window.__catflix_pcstatus_init();
-      } else {
-        if (window.__catflix_pcstatus_stop) {
-          window.__catflix_pcstatus_stop();
-        } else {
-          window.__catflix_pcstatus_running = false;
-          const el = document.getElementById('pc-status-btn');
-          if (el) el.remove();
-        }
+    if (on) {
+      // Reset running flag if it exists, then call init
+      const runningFlag = '__catflix_' + key.replace('Enabled', '') + '_running';
+      if (window[runningFlag] !== undefined) window[runningFlag] = false;
+      if (window[feature.init]) window[feature.init]();
+    } else {
+      // Call stop if it exists, otherwise run the cleanup defined in FEATURES
+      if (window[feature.stop]) {
+        window[feature.stop]();
+      } else if (feature.cleanup) {
+        feature.cleanup();
       }
     }
   }
@@ -100,22 +119,22 @@
 
   // ── Panel ─────────────────────────────────────────────────────────────────
 
-  function makeToggle(settingKey, label, desc, settings) {
-    const on = settings[settingKey] !== false;
+  function makeToggle(feature, settings) {
+    const on = settings[feature.key] !== false;
     return `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
         <div style="flex:1;margin-right:12px;">
-          <div style="color:rgba(255,255,255,0.9);font-size:13px;">${label}</div>
-          <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:2px;">${desc}</div>
+          <div style="color:rgba(255,255,255,0.9);font-size:13px;">${feature.label}</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:2px;">${feature.desc}</div>
         </div>
         <label style="position:relative;display:inline-block;width:44px;height:26px;flex-shrink:0;cursor:pointer;">
-          <input type="checkbox" data-setting="${settingKey}" ${on ? 'checked' : ''}
+          <input type="checkbox" data-setting="${feature.key}" ${on ? 'checked' : ''}
             style="opacity:0;width:0;height:0;position:absolute;">
-          <span data-track="${settingKey}" style="
+          <span data-track="${feature.key}" style="
             position:absolute;cursor:pointer;inset:0;
             background:${on ? '#c084fc' : 'rgba(255,255,255,0.15)'};
             border-radius:26px;transition:background 0.2s;">
-            <span data-knob="${settingKey}" style="
+            <span data-knob="${feature.key}" style="
               position:absolute;height:20px;width:20px;
               left:${on ? '21px' : '3px'};bottom:3px;
               background:#fff;border-radius:50%;transition:left 0.2s;">
@@ -178,9 +197,7 @@
           color:rgba(192,132,252,0.5);text-transform:uppercase;margin-bottom:14px;
         ">Features</div>
 
-        ${makeToggle('movieInfoEnabled',    'Movie Info Button',   'Cast, runtime & IMDb link in player', settings)}
-        ${makeToggle('locationTagsEnabled', 'Location Tags',       'PC / NAS badges on posters',          settings)}
-        ${makeToggle('pcStatusEnabled',     'PC Status Indicator', 'Online dot in header',                settings)}
+        ${FEATURES.map(f => makeToggle(f, settings)).join('')}
 
         <div style="
           margin-top:10px;padding-top:12px;
@@ -203,7 +220,7 @@
       });
     }, 50);
 
-    // ── Draggable (mouse + touch, desktop only) ──
+    // ── Draggable (desktop only) ──
     if (!isMobile) {
       const header = document.getElementById('catflix-panel-header');
       let dragging = false, ox = 0, oy = 0;
