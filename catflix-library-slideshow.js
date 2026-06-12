@@ -7,6 +7,7 @@
     const LIBRARY_IMAGES = {
         'movies': [
             `${CDN}/Movies-1.png`,
+            `${CDN}/Movies-2.png`,
         ],
         'tvshows': [
             `${CDN}/Shows-1.png`,
