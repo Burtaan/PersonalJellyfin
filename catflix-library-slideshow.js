@@ -1,7 +1,7 @@
 // Catflix Library Slideshow - Jellyfin JS Injector Script
 
 (function () {
-    const CDN = 'https://raw.githubusercontent.com/Burtaan/Library-Jellyfin/main';
+    const CDN = 'https://cdn.jsdelivr.net/gh/Burtaan/Library-Jellyfin@main';
 
     // ── Add more images here as you get them ──────────────────────────────────
     const LIBRARY_IMAGES = {
