@@ -74,7 +74,7 @@
 
     setTimeout(() => {
       if (document.getElementById('catflix-catfact-popup')) popup.remove();
-    }, 8000);
+    }, 15000);
   }
 
   window.__catflix_catfact_init();
