@@ -31,7 +31,7 @@
 
         // Create overlay img on top of everything
         const overlay = document.createElement('img');
-        overlay.src = images[0];
+        overlay.src = images[Math.floor(Math.random() * images.length)];
         overlay.style.cssText = `
             position: absolute;
             inset: 0;
