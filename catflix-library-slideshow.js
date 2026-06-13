@@ -17,7 +17,7 @@
     // ─────────────────────────────────────────────────────────────────────────
 
     const INTERVAL_MS = 5000;
-    const FADE_MS     = 800;
+    const FADE_MS     = 600;
 
     function injectOverlay(card, images) {
         if (card._catflixSlideshow) return;
@@ -30,10 +30,11 @@
 
         card._catflixSlideshow = true;
 
-        // Create overlay img on top of everything
-        const overlay = document.createElement('img');
-        overlay.src = images[Math.floor(Math.random() * images.length)];
-        overlay.style.cssText = `
+        // Two overlapping img elements for crossfade
+        const imgA = document.createElement('img');
+        const imgB = document.createElement('img');
+
+        const baseStyle = `
             position: absolute;
             inset: 0;
             width: 100%;
@@ -44,20 +45,37 @@
             pointer-events: none;
             transition: opacity ${FADE_MS}ms ease;
         `;
-        container.style.position = 'relative';
-        container.appendChild(overlay);
 
-        if (images.length > 1) {
-            let index = 0;
-            setInterval(() => {
-                index = (index + 1) % images.length;
-                overlay.style.opacity = '0';
-                setTimeout(() => {
-                    overlay.src = images[index];
-                    overlay.style.opacity = '1';
-                }, FADE_MS);
-            }, INTERVAL_MS);
-        }
+        imgA.style.cssText = baseStyle + 'opacity: 1;';
+        imgB.style.cssText = baseStyle + 'opacity: 0;';
+
+        container.style.position = 'relative';
+        container.appendChild(imgA);
+        container.appendChild(imgB);
+
+        let index = Math.floor(Math.random() * images.length);
+        imgA.src = images[index];
+
+        if (images.length <= 1) return;
+
+        let useA = true;
+
+        setInterval(() => {
+            index = (index + 1) % images.length;
+            const next = useA ? imgB : imgA;
+            const current = useA ? imgA : imgB;
+
+            // Load next image into the hidden layer
+            next.src = images[index];
+            next.style.opacity = '1';
+
+            // After crossfade, hide the old layer
+            setTimeout(() => {
+                current.style.opacity = '0';
+                useA = !useA;
+            }, FADE_MS);
+
+        }, INTERVAL_MS);
     }
 
     function processCards() {
