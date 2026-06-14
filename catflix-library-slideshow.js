@@ -61,7 +61,7 @@
         let useA = true;
 
         setInterval(() => {
-            index = (index + 1) % images.length;
+            index = Math.floor(Math.random() * images.length);
             const next = useA ? imgB : imgA;
             const current = useA ? imgA : imgB;
 
