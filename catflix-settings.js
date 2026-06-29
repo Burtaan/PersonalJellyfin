@@ -16,30 +16,6 @@
       }
     },
     {
-      key:   'locationTagsEnabled',
-      label: 'Location Tags',
-      desc:  'PC / NAS badges on posters',
-      init:  '__catflix_locationtags_init',
-      stop:  '__catflix_locationtags_stop',
-      cleanup() {
-        window.__catflix_locationtags_running = false;
-        document.querySelectorAll('.catflix-location-badge').forEach(b => b.remove());
-        document.querySelectorAll('.card[data-id]').forEach(c => { c._locationTagged = false; });
-      }
-    },
-    {
-      key:   'pcStatusEnabled',
-      label: 'PC Status Indicator',
-      desc:  'Online dot in header',
-      init:  '__catflix_pcstatus_init',
-      stop:  '__catflix_pcstatus_stop',
-      cleanup() {
-        window.__catflix_pcstatus_running = false;
-        const el = document.getElementById('pc-status-btn');
-        if (el) el.remove();
-      }
-    },
-    {
       key:   'catFactEnabled',
       label: 'Cat Fact Popup',
       desc:  'Random cat fact when you open Jellyfin',
