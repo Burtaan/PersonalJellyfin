@@ -21,6 +21,13 @@
       desc:  'Random cat fact when you open Jellyfin',
       init:  '__catflix_catfact_init',
       stop:  '__catflix_catfact_stop'
+    },
+    {
+      key:   'donateEnabled',
+      label: 'Support Button',
+      desc:  'Floating Swish donate pill',
+      init:  '__catflix_donate_init',
+      stop:  '__catflix_donate_stop'
     }
   ];
   // ─────────────────────────────────────────────────────────────────────────
